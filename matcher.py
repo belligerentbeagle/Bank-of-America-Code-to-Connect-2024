@@ -1,12 +1,13 @@
 from datetime import datetime
 from functools import cmp_to_key
 
-
 filtered_orders = [{'time': '2024-01-01', 'orderID': 1, 'client': 'A',
                          'quantity': 100, 'price': 32.1, 'side': 'Buy', 'market_order': False}]
 buy_orders_by_priority = []
 sell_orders_by_priority = []
-
+ORDER_HISTORY = []
+CLIENT_POSITIONS = []
+INSTRUMENT_DATA = []
 
 filled_orders= [{}]
 
@@ -120,6 +121,19 @@ sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator
 print(buy_orders_by_priority)
 print(sell_orders_by_priority)
 
+
+import sys
+import CSVParser
+# take in order, clients, and instruments csv as CLI arguments 
 if __name__ == "__main__":
-    print("Hello World")
+    inputs = sys.argv
+    _, order_file, client_file, instru_file = inputs
+
+    #load all csv
+    orders = CSVParser.parse_orders(order_file)
+    clients = CSVParser.parse_clients(client_file)
+    instruments = CSVParser.parse_instruments(instru_file)
+
     
+
+ORDER_HISTORY.append(1)
