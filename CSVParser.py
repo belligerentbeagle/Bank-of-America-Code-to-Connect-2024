@@ -83,7 +83,7 @@ def parse_clients(clients_file):
             client_id = row[0]
             currencies = row[1].split(",")
             position_check = row[2] == "Y"
-            rating = row[3]
+            rating = int(row[3])
             clients_array.append(Client(client_id, currencies, position_check, rating))
 
     return clients_array #we skip the first line because it contains the header
