@@ -1,5 +1,4 @@
 import csv
-import orderHistory
 
 # Instrument object
 class Instrument:
@@ -122,4 +121,3 @@ def parse_orders(orders_file):
 # for order in orders:
 #     print(order)
 
-print(orderHistory.ORDER_HISTORY)

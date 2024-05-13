@@ -5,11 +5,12 @@ import CSVParser
 
 filtered_orders = [{'time': '2024-01-01', 'orderID': 1, 'client': 'A',
                          'quantity': 100, 'price': 32.1, 'side': 'Buy', 'market_order': False}]
-buy_orders_by_priority = []
+buy_orders_by_priority = [] 
 sell_orders_by_priority = []
 ORDER_HISTORY = []
-CLIENT_POSITIONS = []
+CLIENT_POSITIONS = {} # {client_id: {instrument_id: net_position}} dummy_client_positions = {'A': {'SIA': 100, 'CAG': 20}, 'B': {'SIA': 0, 'CAG': 0}}
 INSTRUMENT_DATA = []
+REJECTED_ORDERS = []
 
 filled_orders= [{}]
 
@@ -124,17 +125,19 @@ sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator
 def matchOrders(sortedBuyList: list, sortedSellList: list):
     matchedBuy = {}
     matchedSell = {}
-    currBuyOrder = sortedBuyList[0]
-    currSellOrder = sortedSellList[0]
-    if currBuyOrder['price'] >= currSellOrder['price']:
-        return (matchedBuy, matchedSell)
-    else:
-        return False
+    currBuyOrder = sortedBuyList[0] # order book buy side
+    currSellOrder = sortedSellList[0] # order book sell side
 
+    # Match Attempt
+    if currBuyOrder['price'] >= currSellOrder['price']: # if match is found in the orderbook
+        return (matchedBuy, matchedSell)
+    else: #if no match found, we add orders to orderbook
+        return False
 
 import sys
 import CSVParser
 import orderValidator
+import reportGenerator
 # take in order, clients, and instruments csv as CLI arguments 
 if __name__ == "__main__":
     inputs = sys.argv
@@ -147,8 +150,16 @@ if __name__ == "__main__":
 
     # sort order by time, check validity of each order and execute. While saving the order's history
     for order in orders:
-        valid, reason = orderValidator.checkOrderValidity(order, clients, instruments, ORDER_HISTORY, CLIENT_POSITIONS, INSTRUMENT_DATA)
+        valid, reason = orderValidator.checkOrderValidity(order)
         if valid:
-            ORDER_HISTORY.append(1)
+            continue
+            # ORDER_HISTORY.append(order)
         else:
-            ORDER_HISTORY.append(0)
+            REJECTED_ORDERS.append((order.order_id, reason))
+
+    reportGenerator.generate_exchange_report(REJECTED_ORDERS)
+    # reportGenerator.client_report(dummy_client_positions)
+
+    reportGenerator.client_report(CLIENT_POSITIONS)
+    # reportGenerator.instrumental_report(INSTRUMENT_DATA)
+
