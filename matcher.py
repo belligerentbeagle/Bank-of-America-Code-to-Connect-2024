@@ -124,6 +124,7 @@ print(sell_orders_by_priority)
 
 import sys
 import CSVParser
+import orderValidator
 # take in order, clients, and instruments csv as CLI arguments 
 if __name__ == "__main__":
     inputs = sys.argv
@@ -134,6 +135,10 @@ if __name__ == "__main__":
     clients = CSVParser.parse_clients(client_file)
     instruments = CSVParser.parse_instruments(instru_file)
 
-    
-
-ORDER_HISTORY.append(1)
+    # sort order by time, check validity of each order and execute. While saving the order's history
+    for order in orders:
+        valid, reason = orderValidator.checkOrderValidity(order, clients, instruments, ORDER_HISTORY, CLIENT_POSITIONS, INSTRUMENT_DATA)
+        if valid:
+            ORDER_HISTORY.append(1)
+        else:
+            ORDER_HISTORY.append(0)
