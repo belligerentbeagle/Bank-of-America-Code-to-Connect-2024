@@ -15,8 +15,12 @@ Example:
 
 # Architecure Diagram
 
-
-
+![Architecture](./images/archi.jpeg)
+- Our Matching Engine would act as the main instance runner. 
+- It first calls the CSV Parser with the file directories of the CSVs provided, and gets back lists of Client, Order and Instrument objects.
+- It then validates the order as it attempts to execute each order with Order Validation.
+- The Order History in the Matching Module keeps track of information like ORDER_HISTORY, CLIENT_POSITIONS, filtered_orders, INSTRUMENT_DATA, and REJECTED_ORDERS.
+- Lastly, the Matching Engine calls the Report Generator to generate all 3 reports. 
 
 # Testing
 
