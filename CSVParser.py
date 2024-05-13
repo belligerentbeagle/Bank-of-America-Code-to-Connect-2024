@@ -52,7 +52,7 @@ def parse_instruments(instruments_file):
     for i in instruments: 
         instrument_id = i.split(",")[0]
         currency = i.split(",")[1]
-        lot_size = i.split(",")[2]
+        lot_size = int(i.split(",")[2].removesuffix("\n"))
         instruments_array.append(Instrument(instrument_id, currency, lot_size))
 
     #remove header
