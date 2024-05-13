@@ -1,6 +1,6 @@
 import csv
 
-# Create instrument object
+# Instrument object
 class Instrument:
     def __init__(self, instrument_id, currency, lot_size):
         self.instrument_id = instrument_id
@@ -9,6 +9,34 @@ class Instrument:
 
     def __str__(self):
         return f"Instrument ID: {self.instrument_id}, Currency: {self.currency}, Lot Size: {self.lot_size}"
+
+# Order Object
+class Order:
+    def __init__(self, time, client_id, instrument_id, side, price, quantity, order_id, market_bool):
+        self.time = time
+        self.order_id = order_id
+        self.client_id = client_id
+        self.instrument_id = instrument_id
+        self.quantity = quantity
+        self.price = price
+        self.side = side
+        self.market = market_bool
+
+    def __str__(self):
+        return f"Time: {self.time}, Client ID: {self.client_id}, Instrument ID: {self.instrument_id}, Side: {self.side}, Price: {self.price}, Quantity: {self.quantity}, Order ID: {self.order_id}, Market: {self.market}"
+
+
+# Client Object
+class Client:
+    def __init__(self, client_id, currencies, position_check, rating):
+        self.client_id = client_id
+        self.currencies = currencies
+        self.position_check = position_check
+        self.rating = rating
+
+    def __str__(self):
+        return f"Client ID: {self.client_id}, Currencies: {self.currencies}, Position Check: {self.position_check}, Rating: {self.rating}"
+
 
 
 ## Takes in a file path and returns a list of instrument objects
@@ -35,18 +63,6 @@ def parse_instruments(instruments_file):
 
 ###parse clients.csv
 
-# Client Object
-class Client:
-    def __init__(self, client_id, currencies, position_check, rating):
-        self.client_id = client_id
-        self.currencies = currencies
-        self.position_check = position_check
-        self.rating = rating
-
-    def __str__(self):
-        return f"Client ID: {self.client_id}, Currencies: {self.currencies}, Position Check: {self.position_check}, Rating: {self.rating}"
-
-
 
 ## Takes in a file path and returns a list of client objects
 ## Each client object contains the client_id, currencies, position_check, and rating
@@ -71,24 +87,6 @@ def parse_clients(clients_file):
 
 # for client in clients:
 #     print(client)
-
-
-### parse orders.csv
-
-# Order Object
-class Order:
-    def __init__(self, time, client_id, instrument_id, side, price, quantity, order_id, market_bool):
-        self.time = time
-        self.order_id = order_id
-        self.client_id = client_id
-        self.instrument_id = instrument_id
-        self.quantity = quantity
-        self.price = price
-        self.side = side
-        self.market = market_bool
-
-    def __str__(self):
-        return f"Time: {self.time}, Client ID: {self.client_id}, Instrument ID: {self.instrument_id}, Side: {self.side}, Price: {self.price}, Quantity: {self.quantity}, Order ID: {self.order_id}, Market: {self.market}"
 
 ## Takes in a file path and returns a list of order objects
 ## Each order object contains the time, client_id, instrument_id, side, price, quantity, and order_id
@@ -119,6 +117,6 @@ def parse_orders(orders_file):
 
     return orders_array #we skip the first line because it contains the header
 
-orders = parse_orders("./DataSets/example-set/input_orders.csv")
-for order in orders:
-    print(order)
+# orders = parse_orders("./DataSets/example-set/input_orders.csv")
+# for order in orders:
+#     print(order)
