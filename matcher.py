@@ -1,5 +1,7 @@
 from datetime import datetime
 from functools import cmp_to_key
+import sys
+import CSVParser
 
 filtered_orders = [{'time': '2024-01-01', 'orderID': 1, 'client': 'A',
                          'quantity': 100, 'price': 32.1, 'side': 'Buy', 'market_order': False}]
@@ -125,9 +127,17 @@ def matchOrders(sortedBuyList: list, sortedSellList: list):
     currBuyOrder = sortedBuyList[0]
     currSellOrder = sortedSellList[0]
     if currBuyOrder['price'] >= currSellOrder['price']:
-        
         return (matchedBuy, matchedSell)
     else:
         return False
 
-print(matchOrders(buy_orders_by_priority, sell_orders_by_priority))
+
+# take in order, clients, and instruments csv as CLI arguments 
+if __name__ == "__main__":
+    inputs = sys.argv
+    _, order_file, client_file, instru_file = inputs
+
+    #load all csv
+    orders = CSVParser.parse_orders(order_file)
+    clients = CSVParser.parse_clients(client_file)
+    instruments = CSVParser.parse_instruments(instru_file)
