@@ -49,16 +49,21 @@ class Client:
 def parse_instruments(instruments_file):
     instruments = open(instruments_file, "r")
     instruments_array = []
-    for i in instruments: 
+    count = 0
+    for i in instruments:
+        #we skip the first line because it contains the header
+        if count == 0:
+            count += 1
+            continue
         instrument_id = i.split(",")[0]
         currency = i.split(",")[1]
-        lot_size = int(i.split(",")[2].removesuffix("\n"))
+        lot_size = int(i.split(",")[2])
         instruments_array.append(Instrument(instrument_id, currency, lot_size))
 
     #remove header
     # instruments_dict = instruments_dict.pop("InstrumentID")
 
-    return instruments_array[1:] #we skip the first line because it contains the header
+    return instruments_array
 
 
 ###parse clients.csv
