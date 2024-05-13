@@ -49,16 +49,21 @@ class Client:
 def parse_instruments(instruments_file):
     instruments = open(instruments_file, "r")
     instruments_array = []
-    for i in instruments: 
+    count = 0
+    for i in instruments:
+        #we skip the first line because it contains the header
+        if count == 0:
+            count += 1
+            continue
         instrument_id = i.split(",")[0]
         currency = i.split(",")[1]
-        lot_size = i.split(",")[2]
+        lot_size = int(i.split(",")[2])
         instruments_array.append(Instrument(instrument_id, currency, lot_size))
 
     #remove header
     # instruments_dict = instruments_dict.pop("InstrumentID")
 
-    return instruments_array[1:] #we skip the first line because it contains the header
+    return instruments_array
 
 
 ###parse clients.csv
@@ -78,7 +83,7 @@ def parse_clients(clients_file):
             client_id = row[0]
             currencies = row[1].split(",")
             position_check = row[2] == "Y"
-            rating = row[3]
+            rating = int(row[3])
             clients_array.append(Client(client_id, currencies, position_check, rating))
 
     return clients_array #we skip the first line because it contains the header
@@ -102,7 +107,7 @@ def parse_orders(orders_file):
             time = row[0]
             order_id = row[1]
             instrument_id = row[2]
-            quantity = row[3]
+            quantity = float(row[3])
             price = row[5]
             market = False
             if price == "Market":
@@ -116,4 +121,8 @@ def parse_orders(orders_file):
             orders_array.append(Order(time, client_id, instrument_id, side, price, quantity, order_id, market))
 
     return orders_array #we skip the first line because it contains the header
+
+# orders = parse_orders("./DataSets/example-set/input_orders.csv")
+# for order in orders:
+#     print(order)
 

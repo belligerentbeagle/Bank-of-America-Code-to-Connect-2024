@@ -3,13 +3,13 @@ from functools import cmp_to_key
 import sys
 import CSVParser
 
-filtered_orders = []
-buy_orders_by_priority = []
+buy_orders_by_priority = [] 
 sell_orders_by_priority = []
 ORDER_HISTORY = []
-REJECTED_ORDERS = []
-CLIENT_POSITIONS = []
+CLIENT_POSITIONS = {} # {client_id: {instrument_id: net_position}} dummy_client_positions = {'A': {'SIA': 100, 'CAG': 20}, 'B': {'SIA': 0, 'CAG': 0}}
+filtered_orders = []
 INSTRUMENT_DATA = []
+REJECTED_ORDERS = []
 
 filled_orders= []
 
@@ -120,19 +120,20 @@ def sortSellOrders(l: list):
 def matchOrders(sortedBuyList: list, sortedSellList: list):
     matchedBuy = {}
     matchedSell = {}
-    currBuyOrder = sortedBuyList[0]
-    currSellOrder = sortedSellList[0]
-    if currBuyOrder['price'] >= currSellOrder['price']:
+    currBuyOrder = sortedBuyList[0] # order book buy side
+    currSellOrder = sortedSellList[0] # order book sell side
+
+    # Match Attempt
+    if currBuyOrder['price'] >= currSellOrder['price']: # if match is found in the orderbook
         return (matchedBuy, matchedSell)
-    else:
+    else: #if no match found, we add orders to orderbook
         return False
-
-
 
 
 import sys
 import CSVParser
 import orderValidator
+import reportGenerator
 # take in order, clients, and instruments csv as CLI arguments 
 if __name__ == "__main__":
     inputs = sys.argv
