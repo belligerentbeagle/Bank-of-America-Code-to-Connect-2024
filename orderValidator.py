@@ -1,16 +1,16 @@
 import CSVParser
 # Description: This file contains the functions to group and categoise the valid orders
 
-def checkOrderValidity(order):
+def checkOrderValidity(order, client_file, instru_file):
     
     #get the instruments
-    instruments = CSVParser.parse_instruments("./DataSets/example-set/input_instruments.csv")
+    instruments = CSVParser.parse_instruments(instru_file)
     instruments_dict = {}
     for instrument in instruments:
         instruments_dict[instrument.instrument_id] = instrument
 
     #get clients
-    clients = CSVParser.parse_clients("./DataSets/example-set/input_clients_test.csv")
+    clients = CSVParser.parse_clients(client_file)
     clients_dict = {}
     for client in clients:
         clients_dict[client.client_id] = client

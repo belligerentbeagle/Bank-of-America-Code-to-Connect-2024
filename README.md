@@ -10,7 +10,7 @@ and the output reports will be generated in the directory of matcher.py!
 
 Example:
 ```
-/opt/homebrew/bin/python3 /Users/ethanyuxin/Documents/World/Bank-of-America-Code-to-Connect-2024/matcher.py ./DataSets/example-set/input_orders.csv ./DataSets/example-set/input_clients.csv ./DataSets/example-set/input_instruments.csv
+/opt/homebrew/bin/python3 /Users/ethanyuxin/Documents/World/Bank-of-America-Code-to-Connect-2024/matcher.py ./DataSets/test-set/input_orders.csv ./DataSets/test-set/input_clients.csv ./DataSets/test-set/input_instruments.csv
 ```
 
 # Architecure Diagram
