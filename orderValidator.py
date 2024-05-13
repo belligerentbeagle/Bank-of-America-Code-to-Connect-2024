@@ -1,5 +1,4 @@
 import CSVParser
-import orderHistory
 # Description: This file contains the functions to group and categoise the valid orders
 
 def checkOrderValidity(order):
@@ -37,12 +36,12 @@ def checkOrderValidity(order):
         return False, "REJECTED - INVALID LOT SIZE"
     
     # check if the order can be processessed checking against the order history, if the client has bought the instrument before
-    if order.side == "SELL":
-        # find that client's order history
-        client_holdings = orderHistory.get_holdings(client_id) #TODO 
-        lots_available = client_holdings[order_instrument]
-        if lots_available < order_lot_size:
-            return False, "REJECTED - POSITION CHECK FAILED"
+    # if order.side == "SELL":
+    #     # find that client's order history
+    #     client_holdings = orderHistory.get_holdings(client_id) #TODO 
+    #     lots_available = client_holdings[order_instrument]
+    #     if lots_available < order_lot_size:
+    #         return False, "REJECTED - POSITION CHECK FAILED"
 
     # temp_passed_orders_dict[order.order_id] = order
 

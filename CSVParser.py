@@ -1,5 +1,4 @@
 import csv
-import orderHistory
 
 # Instrument object
 class Instrument:
@@ -118,8 +117,3 @@ def parse_orders(orders_file):
 
     return orders_array #we skip the first line because it contains the header
 
-# orders = parse_orders("./DataSets/example-set/input_orders.csv")
-# for order in orders:
-#     print(order)
-
-print(orderHistory.ORDER_HISTORY)

@@ -3,15 +3,15 @@ from functools import cmp_to_key
 import sys
 import CSVParser
 
-filtered_orders = [{'time': '2024-01-01', 'orderID': 1, 'client': 'A',
-                         'quantity': 100, 'price': 32.1, 'side': 'Buy', 'market_order': False}]
+filtered_orders = []
 buy_orders_by_priority = []
 sell_orders_by_priority = []
 ORDER_HISTORY = []
+REJECTED_ORDERS = []
 CLIENT_POSITIONS = []
 INSTRUMENT_DATA = []
 
-filled_orders= [{}]
+filled_orders= []
 
 # returns the number of fullfilled orders if this price is taken as open price
 def num_fullfilled_orders(price: int):
@@ -107,19 +107,16 @@ def sortSellsComparator(obj1, obj2):
         return -1
         
 def sortBuyOrders(l: list):
+    print(l[0])
     buyOrdersList = filter(lambda x: x['side'] == 'Buy', l)
     return list(buyOrdersList)
 
 def sortSellOrders(l: list):
-    sellOrdersList = filter(lambda x: x['side'] == 'Sell', l)
+    sellOrdersList = filter(lambda x: x.side == 'Sell', l)
     return list(sellOrdersList)
 
 # test = sorted(filtered_orders1, key=cmp_to_key(sortBuysComparator))
 # print(test)
-buy_orders = sortBuyOrders(filtered_orders1)
-buy_orders_by_priority = sorted(buy_orders, key=cmp_to_key(sortBuysComparator))
-sell_orders = sortSellOrders(filtered_orders1)
-sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator))
 
 def matchOrders(sortedBuyList: list, sortedSellList: list):
     matchedBuy = {}
@@ -130,6 +127,8 @@ def matchOrders(sortedBuyList: list, sortedSellList: list):
         return (matchedBuy, matchedSell)
     else:
         return False
+
+
 
 
 import sys
@@ -147,8 +146,19 @@ if __name__ == "__main__":
 
     # sort order by time, check validity of each order and execute. While saving the order's history
     for order in orders:
-        valid, reason = orderValidator.checkOrderValidity(order, clients, instruments, ORDER_HISTORY, CLIENT_POSITIONS, INSTRUMENT_DATA)
+        valid, reason = orderValidator.checkOrderValidity(order)
         if valid:
-            ORDER_HISTORY.append(1)
+            ORDER_HISTORY.append(order)
         else:
-            ORDER_HISTORY.append(0)
+            REJECTED_ORDERS.append(order)
+    arr_copy = ORDER_HISTORY.copy()
+    for obj in ORDER_HISTORY:
+        filled_orders.append({'time': obj.time, 'orderID': obj.order_id, 'client': obj.client_id,
+             'quantity': obj.quantity, 'price': obj.price, 'side': obj.side, 'market_order': obj.market})
+    
+    buy_orders = sortBuyOrders(filled_orders)
+    buy_orders_by_priority = sorted(buy_orders, key=cmp_to_key(sortBuysComparator))
+    sell_orders = sortSellOrders(filled_orders)
+    sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator))
+    print(buy_orders_by_priority)
+    print(sell_orders_by_priority)
