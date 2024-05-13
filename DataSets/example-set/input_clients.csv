@@ -1,0 +1,6 @@
+ClientID,Currencies,PositionCheck,Rating
+A,"USD,SGD",Y,1
+B,"USD,SGD,JPY",N,2
+C,SGD,Y,3
+D,USD,Y,4
+E,SGD,N,5
