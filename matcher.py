@@ -1,6 +1,5 @@
 from datetime import datetime
 from functools import cmp_to_key
-import orderHistory
 
 filtered_orders = [{'time': '2024-01-01', 'orderID': 1, 'client': 'A',
                          'quantity': 100, 'price': 32.1, 'side': 'Buy', 'market_order': False}]
@@ -119,9 +118,16 @@ buy_orders = sortBuyOrders(filtered_orders1)
 buy_orders_by_priority = sorted(buy_orders, key=cmp_to_key(sortBuysComparator))
 sell_orders = sortSellOrders(filtered_orders1)
 sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator))
-print(buy_orders_by_priority)
-print(sell_orders_by_priority)
 
+def matchOrders(sortedBuyList: list, sortedSellList: list):
+    matchedBuy = {}
+    matchedSell = {}
+    currBuyOrder = sortedBuyList[0]
+    currSellOrder = sortedSellList[0]
+    if currBuyOrder['price'] >= currSellOrder['price']:
+        
+        return (matchedBuy, matchedSell)
+    else:
+        return False
 
-orderHistory.add_to_order_history(1)
-print(orderHistory.ORDER_HISTORY)
+print(matchOrders(buy_orders_by_priority, sell_orders_by_priority))
