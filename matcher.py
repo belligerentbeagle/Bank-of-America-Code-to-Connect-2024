@@ -119,3 +119,7 @@ sell_orders = sortSellOrders(filtered_orders1)
 sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator))
 print(buy_orders_by_priority)
 print(sell_orders_by_priority)
+
+if __name__ == "__main__":
+    print("Hello World")
+    
