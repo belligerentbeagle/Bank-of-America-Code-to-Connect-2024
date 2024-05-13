@@ -107,7 +107,7 @@ def parse_orders(orders_file):
             time = row[0]
             order_id = row[1]
             instrument_id = row[2]
-            quantity = row[3]
+            quantity = int(row[3])
             price = row[5]
             market = False
             if price == "Market":

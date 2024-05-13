@@ -18,14 +18,15 @@ def test_parse_clients():
 
 def test_parse_orders():
     orders = CSVParser.parse_orders("./DataSets/example-set/input_orders.csv")
-    assert len(orders) == 5
-    assert orders[0].order_id == "O1"
-    assert orders[0].client_id == "C1"
+    assert len(orders) == 17
+    assert orders[0].order_id == "A1"
+    assert orders[0].client_id == "A"
     assert orders[0].instrument_id == "SIA"
-    assert orders[0].side == "BUY"
-    assert orders[0].quantity == 100
-    assert orders[0].price == 100
-    assert orders[0].time == "2021-01-01 10:00:00"
+    assert orders[0].side == "Buy"
+    assert orders[0].quantity == 1500
+    assert orders[0].price == None
+    assert orders[0].time == "9:00:01"
+    assert orders[0].market == True
 
 test_parse_instruments()
 test_parse_clients()
