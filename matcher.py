@@ -56,8 +56,8 @@ def get_unique_prices():
 
 # open_price = price_highest_fullfilled
 
-clients = {'A': {'id': 'A', 'rating': 1}, 'B': {'id': 'B', 'rating': 2}}
-
+clients = {}
+instruments = {}
 filtered_orders1 = [
                     {'time': '9:00:02', 'orderID': 1, 'client': 'B',
                          'quantity': 100, 'price': 32.3, 'side': 'Buy', 'market_order': False},
@@ -107,12 +107,11 @@ def sortSellsComparator(obj1, obj2):
         return -1
         
 def sortBuyOrders(l: list):
-    print(l[0])
     buyOrdersList = filter(lambda x: x['side'] == 'Buy', l)
     return list(buyOrdersList)
 
 def sortSellOrders(l: list):
-    sellOrdersList = filter(lambda x: x.side == 'Sell', l)
+    sellOrdersList = filter(lambda x: x['side'] == 'Sell', l)
     return list(sellOrdersList)
 
 # test = sorted(filtered_orders1, key=cmp_to_key(sortBuysComparator))
@@ -141,24 +140,77 @@ if __name__ == "__main__":
 
     #load all csv
     orders = CSVParser.parse_orders(order_file)
-    clients = CSVParser.parse_clients(client_file)
-    instruments = CSVParser.parse_instruments(instru_file)
-
-    # sort order by time, check validity of each order and execute. While saving the order's history
-    for order in orders:
-        valid, reason = orderValidator.checkOrderValidity(order)
-        if valid:
-            ORDER_HISTORY.append(order)
-        else:
-            REJECTED_ORDERS.append(order)
-    arr_copy = ORDER_HISTORY.copy()
-    for obj in ORDER_HISTORY:
+    clients_retrieved = CSVParser.parse_clients(client_file)
+    instruments_retrieved = CSVParser.parse_instruments(instru_file)
+    print(instruments_retrieved)
+    arr_copy = orders.copy()
+    for obj in arr_copy:
         filled_orders.append({'time': obj.time, 'orderID': obj.order_id, 'client': obj.client_id,
-             'quantity': obj.quantity, 'price': obj.price, 'side': obj.side, 'market_order': obj.market})
+             'quantity': obj.quantity, 'price': obj.price, 'side': obj.side, 'market_order': obj.market,
+             'instrument': obj.instrument_id})
+    for obj in clients_retrieved:
+        clients[obj.client_id] = {'id': obj.client_id, 'currencies': obj.currencies, 'rating': obj.rating,
+             'position_check': obj.position_check}
+    for obj in instruments_retrieved:
+        instruments[obj.instrument_id] = {'id': obj.instrument_id, 'currency': obj.currency, 'lot_size': obj.lot_size}
     
-    buy_orders = sortBuyOrders(filled_orders)
+    buy_orders = sortBuyOrders(filter(lambda x: x['price'] != None, filled_orders))
     buy_orders_by_priority = sorted(buy_orders, key=cmp_to_key(sortBuysComparator))
-    sell_orders = sortSellOrders(filled_orders)
+    sell_orders = sortSellOrders(filter(lambda x: x['price'] != None, filled_orders))
     sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator))
-    print(buy_orders_by_priority)
-    print(sell_orders_by_priority)
+    
+    # # sort order by time, check validity of each order and execute. While saving the order's history
+    # for order in orders:
+    #     valid, reason = orderValidator.checkOrderValidity(order)
+    #     if valid:
+    #         ORDER_HISTORY.append(order)
+    #     else:
+    #         REJECTED_ORDERS.append(order)
+    
+    
+    #Open Auction
+    open_auction_buys = list(filter(lambda x: datetime.strptime(x['time'], "%H:%M:%S").time() < datetime(2022, 2, 2, 9, 30, 0).time(), buy_orders_by_priority))
+    open_auction_sells = list(filter(lambda x: datetime.strptime(x['time'], "%H:%M:%S").time() < datetime(2022, 2, 2, 9, 30, 0).time(), sell_orders_by_priority))
+    
+    for instrument in list(instruments.values()):
+        filtered_buys_instr = list(filter(lambda x: x['instrument'] == instrument['id'], open_auction_buys))
+        filtered_sells_instr = list(filter(lambda x: x['instrument'] == instrument['id'], open_auction_sells))
+        
+        while True:
+            curr_buy = filtered_buys_instr[0]
+            curr_sell = filtered_sells_instr[0]
+            print(curr_buy)
+            print(curr_sell)
+            if curr_buy['price'] >= curr_sell['price']:
+                
+                orderFilled = True
+                volume_fullfilled = min(int(curr_buy['quantity']), int(curr_sell['quantity']))
+                print(volume_fullfilled)
+                if volume_fullfilled > 0:
+                    ORDER_HISTORY.append({'client_buy': curr_buy['client'], 'client_sell': curr_sell['client'],
+                                        'order_buy': curr_buy['orderID'], 'order_sell': curr_sell['orderID'],
+                                        'vol': volume_fullfilled, 'instument': instrument['id']})
+                    curr_buy['quantity'] = str(int(curr_buy['quantity']) - int(volume_fullfilled))
+                    curr_sell['quantity'] = str(int(curr_sell['quantity']) - int(volume_fullfilled))
+                else:
+                    break
+            else:
+                break
+        
+    print(ORDER_HISTORY)
+    print(instruments)
+    client_report = []
+    for client in list(clients.values()):
+        filtered_orders_client = list(filter(lambda x: x['client_buy'] == client or x['client_buy'] == client, 
+                                            ORDER_HISTORY))   
+        
+        for instr in list(instruments.values()):
+            # client_report.append([client['id'], instr['id']])
+        # print(client)
+        # for instrument in instruments
+        # client_report.append(client['id'], )
+
+    #Continous Trading
+    
+    #Close Auction
+    
