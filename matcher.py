@@ -131,7 +131,6 @@ def matchOrders(sortedBuyList: list, sortedSellList: list):
         return False
 
 
-
 import sys
 import CSVParser
 import orderValidator
@@ -153,6 +152,7 @@ if __name__ == "__main__":
             ORDER_HISTORY.append(order)
         else:
             REJECTED_ORDERS.append((order.order_id, reason))
+    
     arr_copy = ORDER_HISTORY.copy()
     for obj in ORDER_HISTORY:
         filled_orders.append({'time': obj.time, 'orderID': obj.order_id, 'client': obj.client_id,
