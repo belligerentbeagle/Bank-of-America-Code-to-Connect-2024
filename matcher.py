@@ -1,12 +1,14 @@
 from datetime import datetime
 from functools import cmp_to_key
-
+import orderHistory
 
 filtered_orders = [{'time': '2024-01-01', 'orderID': 1, 'client': 'A',
                          'quantity': 100, 'price': 32.1, 'side': 'Buy', 'market_order': False}]
 buy_orders_by_priority = []
 sell_orders_by_priority = []
-
+ORDER_HISTORY = []
+CLIENT_POSITIONS = []
+INSTRUMENT_DATA = []
 
 filled_orders= [{}]
 
@@ -119,3 +121,7 @@ sell_orders = sortSellOrders(filtered_orders1)
 sell_orders_by_priority = sorted(sell_orders, key=cmp_to_key(sortSellsComparator))
 print(buy_orders_by_priority)
 print(sell_orders_by_priority)
+
+
+orderHistory.add_to_order_history(1)
+print(orderHistory.ORDER_HISTORY)
