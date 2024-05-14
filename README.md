@@ -30,17 +30,16 @@ Example:
 
 CSVParserTest.py is one of our testing files.
 
-# Policy testing
+## Policy testing
 Client F is eligible for trading USD but tries to make order for instrument using SGD.
-
-
-# Plan moving forward post 13th May:
-Finish Matching Engine
-Build Streamlit dashboard showing orders made
-
 
 Lot size test check:
 Order E5 attempts SIA stock order with 2020, not a multiple of 100.
 
-# Edge case to consider
+## Edge case to consider
 If Client A makes a buy order of 100, but it is never/not yet fulfilled, then he makes a sell order of 100, it has to be rejected
+
+
+# Plan moving forward post 13th May:
+- Finish Matching Engine
+- Build Streamlit dashboard showing orders made
