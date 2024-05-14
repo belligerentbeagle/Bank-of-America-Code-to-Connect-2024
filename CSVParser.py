@@ -18,7 +18,10 @@ class Order:
         self.client_id = client_id
         self.instrument_id = instrument_id
         self.quantity = quantity
-        self.price = price
+        if price is not None:
+            self.price = float(price)
+        else:
+            self.price = None
         self.side = side
         self.market = market_bool
 
