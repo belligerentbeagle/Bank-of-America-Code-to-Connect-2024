@@ -33,6 +33,12 @@ CSVParserTest.py is one of our testing files.
 # Policy testing
 Client F is eligible for trading USD but tries to make order for instrument using SGD.
 
+
+# Plan moving forward post 13th May:
+Finish Matching Engine
+Build Streamlit dashboard showing orders made
+
+
 Lot size test check:
 Order E5 attempts SIA stock order with 2020, not a multiple of 100.
 
