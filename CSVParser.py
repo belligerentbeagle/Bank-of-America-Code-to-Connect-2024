@@ -78,7 +78,7 @@ def parse_instruments(instruments_file):
 # clients = parse_clients("./DataSets/example-set/input_clients.csv")
 # print(clients[0]) # Client ID: C1, Currencies: list of currencies, Position Check: True/False, Rating: 1
 def parse_clients(clients_file):
-    clients_array = []
+    clients_dict = {}
     with open(clients_file, "r") as clients:
         reader = csv.reader(clients)
         next(reader)  # Skip the header
@@ -87,9 +87,9 @@ def parse_clients(clients_file):
             currencies = row[1].split(",")
             position_check = row[2] == "Y"
             rating = int(row[3])
-            clients_array.append(Client(client_id, currencies, position_check, rating))
+            clients_dict[client_id] = (Client(client_id, currencies, position_check, rating))
 
-    return clients_array #we skip the first line because it contains the header
+    return clients_dict #we skip the first line because it contains the header
 
 # clients = parse_clients("./DataSets/example-set/input_clients.csv")
 

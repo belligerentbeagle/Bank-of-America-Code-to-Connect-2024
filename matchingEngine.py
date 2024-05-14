@@ -24,14 +24,16 @@ filtered_orders = []
 INSTRUMENT_DATA = []
 REJECTED_ORDERS = []
 filled_orders= []
+clients = {}
+instruments = {}
 
 # returns the number of fullfilled orders if this price is taken as open price
-def num_fullfilled_orders(price: int):
-    curr_orders = filtered_orders.copy()
-    for row, i in enumerate(curr_orders):
-        if row['market_order']:
-            curr_orders[i] = Order(row['time'], row['orderID'], row['client'], row['instrument'],
-                                   row['quantity'], price, row['side'], row['market_order'])
+# def num_fullfilled_orders(price: int):
+#     curr_orders = filtered_orders.copy()
+#     for row, i in enumerate(curr_orders):
+#         if row['market_order']:
+#             curr_orders[i] = Order(row['time'], row['orderID'], row['client'], row['instrument'],
+#                                    row['quantity'], price, row['side'], row['market_order'])
 
 def get_unique_prices():
     price_list = set()
@@ -40,16 +42,14 @@ def get_unique_prices():
             price_list.add(row['price'])
     return list(price_list)
 
-# clients = {}
-# instruments = {}
 
 def sortBuysComparatorByPriceRatingTime(obj1, obj2):
     if obj1.price < obj2.price:
         return 1
     elif obj1.price == obj2.price:
-        if clients[obj1.client_id]['rating'] > clients[obj2.client_id]['rating']:
+        if clients[obj1.client_id].rating > clients[obj2.client_id].rating:
             return 1
-        elif clients[obj1.client_id]['rating'] == clients[obj2.client_id]['rating']:
+        elif clients[obj1.client_id].rating == clients[obj2.client_id].rating:
             if datetime.strptime(obj1.time, "%H:%M:%S") > datetime.strptime(obj2.time, "%H:%M:%S"):
                 return 1
             else:
@@ -63,9 +63,9 @@ def sortSellsComparatorByPriceRatingTime(obj1, obj2):
     if obj1.price > obj2.price:
         return 1
     elif obj1.price == obj2.price:
-        if clients[obj1.client_id]['rating'] > clients[obj2.client_id]['rating']:
+        if clients[obj1.client_id].rating > clients[obj2.client_id].rating:
             return 1
-        elif clients[obj1.client_id]['rating'] == clients[obj2.client_id]['rating']:
+        elif clients[obj1.client_id].rating == clients[obj2.client_id].rating:
             if datetime.strptime(obj1.time, "%H:%M:%S") > datetime.strptime(obj2.time, "%H:%M:%S"):
                 return 1
             else:
@@ -146,20 +146,20 @@ def try_match_order(order):
 def process_trade(buy_order, sell_order):
     trad_vol = min(buy_order.quantity, sell_order.quantity)
     if buy_order.quantity - trad_vol > 0: #still have buy orders left over
-        fulfilled_buy_order = Order(buy_order.time, buy_order.order_id, buy_order.client_id, buy_order.instrument_id, trad_vol, buy_order.price, buy_order.side, buy_order.market)
+        fulfilled_buy_order = Order(buy_order.time, buy_order.client_id, buy_order.instrument_id, buy_order.side, buy_order.price, trad_vol, buy_order.order_id, buy_order.market)
         ORDER_HISTORY.append(sell_order)
         ORDER_HISTORY.append(fulfilled_buy_order)
         left_over_buy_qty = buy_order.quantity - trad_vol
-        leftover_buy_order = Order(buy_order.time, buy_order.order_id, buy_order.client_id, buy_order.instrument_id, left_over_buy_qty, buy_order.price, buy_order.side, buy_order.market)
+        leftover_buy_order = Order(buy_order.time, buy_order.client_id, buy_order.instrument_id, buy_order.side, buy_order.price, left_over_buy_qty, buy_order.order_id, buy_order.market)
         add_to_order_book(leftover_buy_order)
         print("buy order partially fulfilled")
         return buy_order.price, trad_vol
     elif sell_order.quantity - trad_vol > 0: #still have sell orders left over
-        fulfilled_sell_order = Order(sell_order.time, sell_order.order_id, sell_order.client_id, sell_order.instrument_id, trad_vol, sell_order.price, sell_order.side, sell_order.market)
+        fulfilled_sell_order = Order(sell_order.time, sell_order.client_id, sell_order.instrument_id, sell_order.side, sell_order.price, trad_vol, sell_order.order_id, sell_order.market)
         ORDER_HISTORY.append(buy_order)
         ORDER_HISTORY.append(fulfilled_sell_order)
         left_over_sell_qty = sell_order.quantity - trad_vol
-        leftover_sell_order = Order(sell_order.time, sell_order.order_id, sell_order.client_id, sell_order.instrument_id, left_over_sell_qty, sell_order.price, sell_order.side, sell_order.market)
+        leftover_sell_order = Order(sell_order.time, sell_order.client_id, sell_order.instrument_id, sell_order.side, sell_order.price, left_over_sell_qty, sell_order.order_id, sell_order.market)
         add_to_order_book(leftover_sell_order)
         print("sell order partially fulfilled")
         return sell_order.price, trad_vol
@@ -196,7 +196,7 @@ if __name__ == "__main__":
 
     #load all csv
     orders = CSVParser.parse_orders(order_file)
-    clients_retrieved = CSVParser.parse_clients(client_file)
+    clients = CSVParser.parse_clients(client_file)
     instruments_retrieved = CSVParser.parse_instruments(instru_file)
 
     #open auction orders

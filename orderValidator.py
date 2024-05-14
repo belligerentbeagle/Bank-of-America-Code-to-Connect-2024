@@ -10,10 +10,7 @@ def checkOrderValidity(order, client_file, instru_file):
         instruments_dict[instrument.instrument_id] = instrument
 
     #get clients
-    clients = CSVParser.parse_clients(client_file)
-    clients_dict = {}
-    for client in clients:
-        clients_dict[client.client_id] = client
+    clients_dict = CSVParser.parse_clients(client_file)
 
     order_instrument = order.instrument_id
 
